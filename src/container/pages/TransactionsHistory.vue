@@ -117,7 +117,7 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="(item, index) in sortedFilteredTransactions" :key="index">
-                                                <td>{{ index + 1 }}</td>
+                                                <td>{{ index + 1 + (currentPage - 1) * itemsPerPage }}</td>
                                                 <td>{{ item.date }}</td>
                                                 <td>{{ item.transactionId }}</td>
                                                 <td>{{ item.approvedBy }} <br><span class="text-muted" style="font-size: 14px;">{{item.approvedRole}}</span></td>
@@ -139,6 +139,39 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap mt-3">
+                                        <!-- Pagination Items -->
+                                        <div class="pt-2">
+                                            <button class="btn btn-primary btn-sm me-2" @click="prevPage" :disabled="currentPage === 1">Previous</button>
+
+                                            <!-- Page numbers, dynamically generated -->
+                                            <span v-for="page in pageNumbers" :key="page">
+                                            <button
+                                                class="btn btn-sm"
+                                                :class="{ 'btn-primary': page === currentPage, 'btn-light': page !== currentPage }"
+                                                @click="changePage(page)"
+                                            >
+                                                {{ page }}
+                                            </button>
+                                            </span>
+
+                                            <button class="btn btn-primary btn-sm ms-2" @click="nextPage" :disabled="currentPage === totalPages">
+                                            Next
+                                            </button>
+                                        </div>
+
+                                        <!-- Items Per Page Dropdown -->
+                                        <div class="pt-2 form-group d-flex align-items-center">
+                                            <label for="itemsPerPage" class="me-2 mb-0">Show</label>
+                                            <select v-model="itemsPerPage" id="itemsPerPage" class="form-select form-select-sm w-auto">
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="15">15</option>
+                                            <option value="20">20</option>
+                                            </select>
+                                            <span class="ms-2">items per page</span>
+                                        </div>
+                                    </div>
                             </div>
                         </div>
                     </div>
@@ -203,7 +236,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { Modal } from 'bootstrap';
 import { allData } from '@/store/index';
 import { toast } from 'vue3-toastify';
@@ -299,6 +332,8 @@ export default {
         // ]);
         const store = allData()
         const transactionsList = ref(store.transactionsList)
+        const currentPage = ref(1);
+        const itemsPerPage = ref(5);
         const filters = ref({
             date: '',
             transactionId: '',
@@ -313,6 +348,7 @@ export default {
         const sortKey = ref('');
         const sortOrder = ref('asc');
         const filteredTransaction = ref([...transactionsList.value]);
+        const totalPages = computed(() => Math.ceil(filteredTransaction.value.length / itemsPerPage.value));
         const actionPopupModal = ref(null);
         const transactionDetail = ref({})
         const changeStatus = ref('')
@@ -327,6 +363,38 @@ export default {
             actionPopupModal.value = new Modal(document.getElementById('actionPopupModal'));
             actionPopupModal.value.show();
         };
+
+        const paginatedData = computed(() => {
+            const start = (currentPage.value - 1) * itemsPerPage.value;
+            const end = start + itemsPerPage.value;
+            return transactionsList.value.slice(start, end);
+        });
+
+        const pageNumbers = computed(() => {
+            const start = Math.max(1, currentPage.value - 2);
+            const end = Math.min(totalPages.value, currentPage.value + 2);
+            const pages = [];
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+            return pages;
+        });
+
+        const changePage = (page) => {
+            currentPage.value = page;
+        };
+
+        const prevPage = () => {
+            if (currentPage.value > 1) currentPage.value--;
+        };
+
+        const nextPage = () => {
+            if (currentPage.value < totalPages.value) currentPage.value++;
+        };
+
+        watch(itemsPerPage, () => {
+            currentPage.value = 1; // Reset to page 1 when itemsPerPage changes
+        });
 
         const notify = (msg, type) => {
             if(type == 'success'){
@@ -397,7 +465,10 @@ export default {
         };
 
         const sortedFilteredTransactions = computed(() => {
-            return filteredTransaction.value.slice().sort((a, b) => {
+            const start = (currentPage.value - 1) * itemsPerPage.value;
+            const end = start + itemsPerPage.value;
+            // return transactionsList.value.slice(start, end);
+            return filteredTransaction.value.slice(start, end).sort((a, b) => {
                 if (sortKey.value) {
                     let compare = 0;
                     if (a[sortKey.value] < b[sortKey.value]) {
@@ -448,7 +519,15 @@ export default {
             changeStatus,
             partitalAmount,
             popupTransactionId,
-            notify
+            notify,
+            currentPage,
+            itemsPerPage,
+            totalPages,
+            paginatedData,
+            pageNumbers,
+            changePage,
+            prevPage,
+            nextPage
         }
     }
 }

@@ -15,12 +15,12 @@
                             </div>
                             <div class="dropdown px-2 pt-0">
                                 <p class="m-0 dropdown-toggle nickName">
-                                    Jagatheeswaran <br>
+                                    Jagathees <br>
                                     <span class="text-muted" style="font-size: 16px;">{{profileData.role||'Admin'}}</span>
                                 </p>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user px-2" style="color: #000000;"></i>My Profile</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-lock px-2" style="color: #000000;"></i>Change Password</a></li>
+                                    <li @click="navigateTo('/profile')"><a class="dropdown-item" href="#"><i class="fa-solid fa-user px-2" style="color: #000000;"></i>My Profile</a></li>
+                                    <li @click="navigateTo('/changePassword')"><a class="dropdown-item" href="#"><i class="fa-solid fa-lock px-2" style="color: #000000;"></i>Change Password</a></li>
                                     <li @click="logout()"><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-right-from-bracket px-2" style="color: #000000;"></i>Logout</a></li>
                                 </ul>
                             </div>
@@ -49,9 +49,13 @@ export default {
         const logout = () => {
             router.push('/login')
         }
+        const navigateTo = (route) => {
+            router.push(route);
+        }
 
         return {
             logout,
+            navigateTo,
             store,
             toggleSideBar,
             profileData

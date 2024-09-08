@@ -14,40 +14,69 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 }
 body{
     background: #f7f7f7 !important;
+    overflow-x: hidden !important;
 }
 ::selection {
     background-color: #9C27B0; /* Medium Blue */
     color: #FFFFFF; /* White */
   }
+::-webkit-scrollbar{
+    background-color: #08395B;
+    height: 6px;
+    width: 10px;
+     
+}
+::-webkit-scrollbar-track {
+    /* width: 10px !important; */
+    background: #08395B; /* background of the scrollbar track */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #87bbe5; /* color when hovering */
+  }
 
 .layoutSide{
     width: 0;
-    /* display: none; */
-    transition: 1s;
     background-color: #08395B;
-    height: 100vh;
-    /* transition: 1s; */
     visibility: hidden;
+    min-height: 100vh;
+    transition: 1s;
+    padding-top: 100px;
 }
 .layoutMain{
     transition: 1s;
     width: 100%;
-    /* background-color: #F5F7FA; */
-    min-height: 86vh;
+    overflow-y: auto;
+    padding-top: 100px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; 
+    /* min-height: 86vh; */
 }
 .layoutSide.active{
     width: 20%;
     visibility: visible;
-    /* display: block; */
-    /* transition: 1s; */
 }
 .layoutMain.active{
     width: 80%;
 }
-/* login page */
+.blowHeader{
+    position: fixed;
+    width: 100%;
+}
+.footer {
+    background-color: #f1f1f1; /* Light background color */
+    text-align: center;        /* Center align the text */
+    padding-top: 10px;           /* Add padding to make it more spacious */
+    color: #333;               /* Set the text color */
+    margin-top: auto;          /* Push footer to the bottom */
+    width: 100%;               /* Ensure it spans the full width */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
 .login .row{
     width: 100%;
-    height: 100vh;
+    height: 100vh;  
 }
 .login .card{
     border: none;
@@ -82,6 +111,11 @@ body{
     width: 200px;
 }
 .header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    width: 100%;
     padding: 20px 40px;
     /* background-color: #c4e0f4; */
     background-color: #e1edf7;
@@ -132,16 +166,40 @@ body{
     text-wrap: nowrap;
     font-size: 18px;
 }
+.sideBar .menuList li .collapse li{
+    text-wrap: wrap;
+}
 .sideBar .menuList li a{
     color: #F5F7FA;
     text-decoration: none;
 }
-.sideBar .menuList li.active{
+.layoutSide.active .sideBar .menuList li.active{
     background-color: #385c82;
+}
+.layoutSide.active .sideBar .menuList .collapse li.active{
+    background-color: #507eaf;
+}
+table{
+    text-wrap: nowrap;
 }
 /* media query */
 @media (max-width: 1200px) { 
-
+    /* .layoutSide{
+        width: 0;
+        transition: 1s;
+        visibility: hidden;
+    }
+    .layoutMain{
+        transition: 1s;
+        width: 100%;
+    }
+    .layoutSide.active{
+        width: 20%;
+        visibility: visible;
+    }
+    .layoutMain.active{
+        width: 80%;
+    } */
 }
 @media (max-width: 992px) { 
 .login .card{
@@ -153,6 +211,32 @@ body{
 }
 .login .img{
     filter: blur(5px);
+}
+.layoutSide{
+    width: 100%;
+    transition: 1s;
+    visibility: visible;
+    display: block;
+}
+.layoutMain{
+    transition: 1s;
+    width: 0%;
+}
+.layoutSide.active{
+    width: 0%;
+    transition: 1s;
+    visibility: visible !important;
+    display: none;
+}
+.layoutMain.active{
+    transition: 1s;
+    width: 100%;
+}
+.layoutSide .sideBar .menuList li.active{
+    background-color: #385c82;
+}
+.layoutSide .sideBar .menuList .collapse li.active{
+    background-color: #507eaf;
 }
 }
 @media (max-width: 768px) { 

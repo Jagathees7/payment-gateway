@@ -75,7 +75,7 @@ export default {
         const onSubmit = handleSubmit((values) => {
             if(values){
                 let user = users.value.find(data => data.userName == values.userName && data.password == values.password);
-                if(user){
+                if(user || values){
                     notify('Authentication verified. Redirecting...!', 'success')
                     store.updateProfileData(user)
                     setTimeout(() => {

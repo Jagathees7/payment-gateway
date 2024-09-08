@@ -3,7 +3,7 @@
         <div class="container px-4">
         <h3 class="py-3" style="font-weight: bold;">DASHBOARD</h3>
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-lg-3 col-md-6 py-2">
                     <div class="card bg-primary-gradient text-center shadow h-100">
                         <div class="card-body">
                             <h5 class="card-title mt-2">Total Transactions</h5>
@@ -15,7 +15,7 @@
                 </div>
 
                 <!-- Card 2 -->
-                <div class="col-md-3">
+                <div class="col-lg-3 col-md-6 py-2">
                     <div class="card bg-success-gradient text-center shadow h-100">
                         <div class="card-body">
                             <h5 class="card-title mt-2">Total Staff</h5>
@@ -27,7 +27,7 @@
                 </div>
 
                 <!-- Card 3 -->
-                <div class="col-md-3">
+                <div class="col-lg-3 col-md-6 py-2">
                     <div class="card bg-warning-gradient text-center shadow h-100">
                         <div class="card-body">
                             <h5 class="card-title mt-2">Orders</h5>
@@ -39,7 +39,7 @@
                 </div>
 
                 <!-- Card 4 -->
-                <div class="col-md-3">
+                <div class="col-lg-3 col-md-6 py-2">
                     <div class="card bg-danger-gradient text-center shadow h-100">
                         <div class="card-body">
                             <h5 class="card-title mt-2">Revenue</h5>

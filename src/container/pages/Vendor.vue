@@ -71,7 +71,7 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="(vendor, index) in sortedFilteredVendors" :key="vendor.id">
-                                                <td>{{ index + 1 }}</td>
+                                                <td>{{ index + 1 + (currentPage - 1) * itemsPerPage }}</td>
                                                 <td>{{ vendor.vendorName }}</td>
                                                 <td>{{ vendor.nickName }}</td>
                                                 <td>{{ vendor.phoneNo }}</td>
@@ -86,6 +86,39 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <!-- Pagination Items -->
+                                        <div>
+                                            <button class="btn btn-primary btn-sm me-2" @click="prevPage" :disabled="currentPage === 1">Previous</button>
+
+                                            <!-- Page numbers, dynamically generated -->
+                                            <span v-for="page in pageNumbers" :key="page">
+                                            <button
+                                                class="btn btn-sm"
+                                                :class="{ 'btn-primary': page === currentPage, 'btn-light': page !== currentPage }"
+                                                @click="changePage(page)"
+                                            >
+                                                {{ page }}
+                                            </button>
+                                            </span>
+
+                                            <button class="btn btn-primary btn-sm ms-2" @click="nextPage" :disabled="currentPage === totalPages">
+                                            Next
+                                            </button>
+                                        </div>
+
+                                        <!-- Items Per Page Dropdown -->
+                                        <div class="form-group d-flex align-items-center">
+                                            <label for="itemsPerPage" class="me-2 mb-0">Show</label>
+                                            <select v-model="itemsPerPage" id="itemsPerPage" class="form-select form-select-sm w-auto">
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="15">15</option>
+                                            <option value="20">20</option>
+                                            </select>
+                                            <span class="ms-2">items per page</span>
+                                        </div>
+                                    </div>
                             </div>
                         </div>
                     </div>
@@ -146,7 +179,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { Modal } from 'bootstrap';
 import { toast } from 'vue3-toastify';
 
@@ -185,7 +218,9 @@ export default {
         });
 
         const filteredVendors = ref([...vendors.value]); // Initialize with all vendors
-
+        const totalPages = computed(() => Math.ceil(filteredVendors.value.length / itemsPerPage.value));
+        const currentPage = ref(1);
+        const itemsPerPage = ref(5);
         const selectedVendor = ref({
             id: null,
             vendorName: '',
@@ -209,6 +244,38 @@ export default {
                 sortOrder.value = 'asc';
             }
         };
+
+        const paginatedData = computed(() => {
+            const start = (currentPage.value - 1) * itemsPerPage.value;
+            const end = start + itemsPerPage.value;
+            return vendors.value.slice(start, end);
+        });
+
+        const pageNumbers = computed(() => {
+            const start = Math.max(1, currentPage.value - 2);
+            const end = Math.min(totalPages.value, currentPage.value + 2);
+            const pages = [];
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+            return pages;
+        });
+
+        const changePage = (page) => {
+            currentPage.value = page;
+        };
+
+        const prevPage = () => {
+            if (currentPage.value > 1) currentPage.value--;
+        };
+
+        const nextPage = () => {
+            if (currentPage.value < totalPages.value) currentPage.value++;
+        };
+
+        watch(itemsPerPage, () => {
+            currentPage.value = 1; // Reset to page 1 when itemsPerPage changes
+        });
 
         const getSortIcon = (key) => {
             if (sortKey.value === key) {
@@ -243,7 +310,9 @@ export default {
         };
 
         const sortedFilteredVendors = computed(() => {
-            return filteredVendors.value.slice().sort((a, b) => {
+            const start = (currentPage.value - 1) * itemsPerPage.value;
+            const end = start + itemsPerPage.value;
+            return filteredVendors.value.slice(start, end).sort((a, b) => {
                 if (sortKey.value) {
                     let compare = 0;
                     if (a[sortKey.value] < b[sortKey.value]) {
@@ -320,6 +389,14 @@ export default {
             saveVendor,
             deleteVendor,
             confirmDeleteVendor,
+            currentPage,
+            itemsPerPage,
+            totalPages,
+            paginatedData,
+            pageNumbers,
+            changePage,
+            prevPage,
+            nextPage
         };
     },
 };
