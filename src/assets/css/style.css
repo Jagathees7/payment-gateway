@@ -52,6 +52,7 @@ body{
     display: flex;
     flex-direction: column;
     min-height: 100vh; 
+    max-height: 100vh;
     /* min-height: 86vh; */
 }
 .layoutSide.active{
@@ -62,7 +63,7 @@ body{
     width: 80%;
 }
 .blowHeader{
-    position: fixed;
+    /* position: fixed; */
     width: 100%;
 }
 .footer {

@@ -65,7 +65,7 @@ export default {
                 });
                 return
             }
-            toast.success('Password successfully changed!', {
+            toast.success('Profile updated successfully!', {
                 autoClose: 3000,
                 position: 'top-right'
             });
